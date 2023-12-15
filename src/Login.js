@@ -1,16 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Updated import
 
-function Login(){
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    function handSubmit(event){
-        event.preventDefault();
-        axios.post('http://localhost:8081/login', {email, password })
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
-    }
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Updated hook
+
+  function handSubmit(event) {
+    event.preventDefault();
+    axios.post('http://localhost:8081/login', { email, password })
+      .then(res => {
+        console.log(res);
+        if (res.data === "Login Successfully") {
+          navigate('/home'); // Updated redirection
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
     return(
         <div className='d-flex vh-100 justify-content-center align-items-center bg-primary'>
             <div className='p-3 bg-white w-25'>
