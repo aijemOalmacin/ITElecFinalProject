@@ -1,56 +1,83 @@
-import React from 'react';
-import './Home.css';
-import foodImage1 from './food1.jpg'; // Replace with your image files
-import foodImage2 from './food2.jpg';
-import foodImage3 from './food3.jpg';
+import React, { useState } from 'react';
+import './FoodOrderApp.css'; 
 
-const Home = () => {
+
+const FoodOrderApp = () => {
+  
+  const [menuItems] = useState([
+    { id: 1, name: 'Burger', price: 8.99 },
+    { id: 2, name: 'Pizza', price: 12.99 },
+    { id: 3, name: 'Salad', price: 6.99 },
+  ]);
+
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  
+  const handleItemClick = (item, quantity) => {
+    const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.id === item.id);
+
+    if (existingItemIndex !== -1) {
+      
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex].quantity += quantity;
+      setCartItems(updatedCartItems);
+    } else {
+      
+      const newItem = { ...item, quantity };
+      setCartItems((prevItems) => [...prevItems, newItem]);
+    }
+
+    
+    const newTotalPrice = totalPrice + item.price * quantity;
+    setTotalPrice(newTotalPrice);
+  };
+
+  
+  const placeOrder = () => {
+    
+    console.log('Order placed:', cartItems);
+  
+    setCartItems([]);
+    setTotalPrice(0);
+  };
+
   return (
-    <div className="home-container">
-      <header className="header">
-        <h1>Delicious Food Hub</h1>
-        <p>Explore a world of culinary delights</p>
-      </header>
+    <div className="food-order-app">
+      <h1>Food Ordering App</h1>
 
-      <nav className="navbar">
-        <div className="logo">
-          <h1>Food Hub</h1>
-        </div>
-        <ul className="nav-links">
-          <li>Home</li>
-          <li>About</li>
-          <li>Contact</li>
+      <div className="menu">
+        <h2>Menu</h2>
+        <ul>
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <span className="menu-item">{item.name} -  ₱ {item.price}</span>
+              <button className="add-to-cart-btn" onClick={() => handleItemClick(item, 1)}>
+                Add to Cart
+              </button>
+            </li>
+          ))}
         </ul>
-      </nav>
+      </div>
 
-      <section className="featured-section">
-        <h2>Featured Dishes</h2>
-        <div className="featured-images">
-          <img src={foodImage1} alt="Featured Food 1" />
-          <img src={foodImage2} alt="Featured Food 2" />
-          <img src={foodImage3} alt="Featured Food 3" />
-        </div>
-      </section>
-
-      <section className="category-section">
-        <h2>Explore Categories</h2>
-        <div className="category-cards">
-          <div className="category-card">
-            <img src={foodImage1} alt="Category 1" />
-            <h3>Italian Cuisine</h3>
-          </div>
-          <div className="category-card">
-            <img src={foodImage2} alt="Category 2" />
-            <h3>Asian Fusion</h3>
-          </div>
-          <div className="category-card">
-            <img src={foodImage3} alt="Category 3" />
-            <h3>Vegetarian Delights</h3>
-          </div>
-        </div>
-      </section>
+      <div className="shopping-cart">
+        <h2>Shopping Cart</h2>
+        <ul>
+          {cartItems.map((cartItem) => (
+            <li key={cartItem.id}>
+              <span className="cart-item">
+                {cartItem.name} -  ₱ {cartItem.price} x {cartItem.quantity}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="total-price">Total Price:  ₱ {totalPrice.toFixed(2)}</p>
+        <button className="place-order-btn" onClick={placeOrder}>
+          Place Order
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default FoodOrderApp;
